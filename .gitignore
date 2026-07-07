@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains secrets - never commit this)
+.env
+
+# Database file (your local data, not code)
+backend/taskflow.db
+
+# Build output
+frontend/dist/
+
+# Editor/OS junk
+.DS_Store
+.vscode/
+*.log
