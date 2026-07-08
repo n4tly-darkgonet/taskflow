@@ -1,6 +1,22 @@
 import { Draggable } from "@hello-pangea/dnd";
 
+// Turns "2026-07-15" into something friendlier like "Jul 15", and tells
+// us whether that date has already passed (so we can highlight it).
+function formatDueDate(dueDate) {
+  if (!dueDate) return null;
+  const [year, month, day] = dueDate.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const label = date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  const isOverdue = date < today;
+  return { label, isOverdue };
+}
+
 export default function TaskCard({ task, index, onDelete }) {
+  const due = formatDueDate(task.due_date);
+
   return (
     <Draggable draggableId={String(task.id)} index={index}>
       {(provided, snapshot) => (
@@ -21,6 +37,11 @@ export default function TaskCard({ task, index, onDelete }) {
             </button>
           </div>
           {task.description && <p>{task.description}</p>}
+          {due && (
+            <span className={due.isOverdue ? "due-badge due-badge-overdue" : "due-badge"}>
+              {due.isOverdue ? "Overdue · " : ""}{due.label}
+            </span>
+          )}
         </div>
       )}
     </Draggable>

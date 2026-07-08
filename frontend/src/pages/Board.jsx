@@ -16,8 +16,8 @@ export default function Board() {
     api.getBoard(auth.token, boardId).then(setBoard);
   }, [auth.token, boardId]);
 
-  async function handleAddTask(columnId, title) {
-    const task = await api.createTask(auth.token, columnId, title);
+ async function handleAddTask(columnId, title, dueDate) {
+    const task = await api.createTask(auth.token, columnId, title, dueDate);
     setBoard((prev) => ({
       ...prev,
       columns: prev.columns.map((col) =>

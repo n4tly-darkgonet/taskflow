@@ -26,7 +26,7 @@ function columnBelongsToUser(columnId, userId) {
 // POST /api/columns/:columnId/tasks - add a task to the end of a column
 router.post("/columns/:columnId/tasks", (req, res) => {
   const { columnId } = req.params;
-  const { title, description } = req.body;
+  const { title, description, due_date } = req.body;
 
   if (!columnBelongsToUser(columnId, req.userId)) {
     return res.status(404).json({ error: "Column not found." });
@@ -42,9 +42,9 @@ router.post("/columns/:columnId/tasks", (req, res) => {
 
   const result = db
     .prepare(
-      "INSERT INTO tasks (column_id, title, description, position) VALUES (?, ?, ?, ?)"
+      "INSERT INTO tasks (column_id, title, description, due_date, position) VALUES (?, ?, ?, ?, ?)"
     )
-    .run(columnId, title.trim(), description || "", nextPosition);
+    .run(columnId, title.trim(), description || "", due_date || null, nextPosition);
 
   const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(result.lastInsertRowid);
   res.status(201).json(task);
@@ -57,9 +57,10 @@ router.patch("/tasks/:id", (req, res) => {
     return res.status(404).json({ error: "Task not found." });
   }
 
-  const { title, description } = req.body;
-  db.prepare("UPDATE tasks SET title = COALESCE(?, title), description = COALESCE(?, description) WHERE id = ?")
-    .run(title?.trim(), description, task.id);
+  const { title, description, due_date } = req.body;
+  db.prepare(
+    "UPDATE tasks SET title = COALESCE(?, title), description = COALESCE(?, description), due_date = COALESCE(?, due_date) WHERE id = ?"
+  ).run(title?.trim(), description, due_date, task.id);
 
   const updated = db.prepare("SELECT * FROM tasks WHERE id = ?").get(task.id);
   res.json(updated);

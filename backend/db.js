@@ -65,10 +65,24 @@ db.exec(`
     column_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     description TEXT DEFAULT '',
+    due_date TEXT DEFAULT NULL,
     position INTEGER NOT NULL,
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (column_id) REFERENCES columns(id) ON DELETE CASCADE
   );
 `);
+
+// --- Migration: add due_date to databases created before this feature ---
+// This project already existed and people already have a taskflow.db file
+// with tasks in it. "CREATE TABLE IF NOT EXISTS" above only helps for
+// brand new databases - it does nothing to a table that already exists.
+// So we check whether the column is already there, and if not, add it.
+// This is exactly the kind of migration real production apps run whenever
+// they change their database shape after it's already storing real data.
+const taskTableInfo = db.prepare("PRAGMA table_info(tasks)").all();
+const hasDueDate = taskTableInfo.some((col) => col.name === "due_date");
+if (!hasDueDate) {
+  db.exec("ALTER TABLE tasks ADD COLUMN due_date TEXT DEFAULT NULL");
+}
 
 module.exports = db;

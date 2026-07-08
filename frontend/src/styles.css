@@ -413,6 +413,28 @@ a {
   padding: 8px 10px;
   font-size: 13px;
   background: var(--surface);
+  margin-bottom: 6px;
+}
+
+.due-date-input {
+  color: var(--ink-soft);
+  font-size: 12px !important;
+}
+
+.due-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: var(--accent-soft);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.due-badge-overdue {
+  color: var(--danger);
+  background: #fbeceb;
 }
 
 .add-task-form input:focus {
