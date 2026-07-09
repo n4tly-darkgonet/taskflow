@@ -22,16 +22,20 @@ const app = express();
 app.use(cors()); // allows the frontend (running on a different origin) to call this API
 app.use(express.json()); // parses incoming JSON request bodies into req.body
 
+// Simple health check - useful for confirming the server is alive.
+// This must be registered BEFORE the column/task routers below, since
+// those routers apply a "must be logged in" check to every request
+// that reaches them - even ones that don't match any of their specific
+// routes. Defining health here first means it never reaches that check.
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 // Mount our route files under /api
 app.use("/api/auth", authRoutes);
 app.use("/api/boards", boardRoutes);
 app.use("/api", columnRoutes); // handles /api/boards/:boardId/columns and /api/columns/:id
 app.use("/api", taskRoutes); // handles /api/columns/:columnId/tasks and /api/tasks/:id
-
-// Simple health check - useful for confirming the server is alive
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
 
 // Catch-all error handler - if any route throws, we end up here
 // instead of crashing the whole server.
