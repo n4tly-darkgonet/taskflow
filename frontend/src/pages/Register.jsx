@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -14,6 +15,12 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+
+    if (password !== confirmPassword) {
+      setError("Those passwords don't match. Try typing them again.");
+      return;
+    }
+
     setLoading(true);
     try {
       const data = await api.register(username, password);
@@ -28,7 +35,13 @@ export default function Register() {
 
   return (
     <div className="auth-shell">
+      <div className="auth-blob auth-blob-1" aria-hidden="true"></div>
+      <div className="auth-blob auth-blob-2" aria-hidden="true"></div>
+
       <div className="auth-card">
+        <div className="auth-brand">
+          <span className="brand-mark">T</span>
+        </div>
         <h1>Create your account</h1>
         <p className="auth-sub">Start organizing your work with boards.</p>
 
@@ -53,6 +66,18 @@ export default function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 6 characters"
+              required
+              minLength={6}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="confirmPassword">Confirm password</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Type it again"
               required
               minLength={6}
             />

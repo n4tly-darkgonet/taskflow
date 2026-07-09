@@ -28,7 +28,13 @@ export default function Login() {
 
   return (
     <div className="auth-shell">
+      <div className="auth-blob auth-blob-1" aria-hidden="true"></div>
+      <div className="auth-blob auth-blob-2" aria-hidden="true"></div>
+
       <div className="auth-card">
+        <div className="auth-brand">
+          <span className="brand-mark">T</span>
+        </div>
         <h1>Welcome back</h1>
         <p className="auth-sub">Log in to see your boards.</p>
 

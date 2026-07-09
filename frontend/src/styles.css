@@ -119,11 +119,15 @@ a {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
 }
 
 .btn:hover {
   border-color: var(--ink-soft);
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -149,7 +153,25 @@ a {
 }
 
 /* Auth pages */
+@keyframes floatBlob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.08); }
+  66% { transform: translate(-20px, 25px) scale(0.95); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85) rotate(-10deg); }
+  to { opacity: 1; transform: scale(1) rotate(-6deg); }
+}
+
 .auth-shell {
+  position: relative;
+  overflow: hidden;
   flex: 1;
   display: flex;
   align-items: center;
@@ -157,13 +179,56 @@ a {
   padding: 24px;
 }
 
+.auth-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: floatBlob 14s ease-in-out infinite;
+}
+
+.auth-blob-1 {
+  width: 320px;
+  height: 320px;
+  background: var(--accent);
+  top: -80px;
+  left: -80px;
+}
+
+.auth-blob-2 {
+  width: 260px;
+  height: 260px;
+  background: var(--accent);
+  bottom: -60px;
+  right: -60px;
+  animation-delay: -7s;
+}
+
+.auth-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.auth-brand .brand-mark {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  border-radius: 12px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 .auth-card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 380px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 36px;
+  animation: fadeInUp 0.45s ease both;
 }
 
 .auth-card h1 {
@@ -264,12 +329,26 @@ a {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color 0.15s ease, transform 0.1s ease;
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  animation: fadeInUp 0.35s ease both;
 }
+
+/* Stagger each tile's entrance slightly so they cascade in rather than
+   all popping in at once. Covers the first 8 tiles; anything beyond
+   that just uses the same delay as the 8th. */
+.board-tile:nth-child(1) { animation-delay: 0.02s; }
+.board-tile:nth-child(2) { animation-delay: 0.06s; }
+.board-tile:nth-child(3) { animation-delay: 0.1s; }
+.board-tile:nth-child(4) { animation-delay: 0.14s; }
+.board-tile:nth-child(5) { animation-delay: 0.18s; }
+.board-tile:nth-child(6) { animation-delay: 0.22s; }
+.board-tile:nth-child(7) { animation-delay: 0.26s; }
+.board-tile:nth-child(8) { animation-delay: 0.3s; }
 
 .board-tile:hover {
   border-color: var(--accent);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .board-tile-icon {
@@ -349,6 +428,7 @@ a {
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  animation: fadeInUp 0.3s ease both;
 }
 
 .column-header {
@@ -383,6 +463,11 @@ a {
   min-height: 40px;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .task-card {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -390,6 +475,7 @@ a {
   padding: 12px 14px;
   font-size: 14px;
   line-height: 1.45;
+  animation: fadeIn 0.25s ease both;
 }
 
 .task-card p {
