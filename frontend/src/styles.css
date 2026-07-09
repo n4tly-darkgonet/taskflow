@@ -351,6 +351,12 @@ a {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
+.board-tile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 .board-tile-icon {
   width: 34px;
   height: 34px;
@@ -361,6 +367,36 @@ a {
   place-items: center;
   font-family: var(--font-display);
   font-weight: 700;
+}
+
+.board-tile-delete {
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 4px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+/* Only show the delete button once you're hovering the tile - keeps
+   the board grid looking clean until you actually need it. */
+.board-tile:hover .board-tile-delete {
+  opacity: 1;
+}
+
+.board-tile-delete:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* Touch devices don't have hover, so keep the delete button faintly
+   visible there instead of hiding it completely. */
+@media (hover: none) {
+  .board-tile-delete {
+    opacity: 0.5;
+  }
 }
 
 .board-tile h3 {
@@ -596,11 +632,28 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
 }
 
 .theme-toggle:hover {
   border-color: var(--accent);
-  transform: scale(1.06);
+  transform: scale(1.1) rotate(-8deg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.theme-toggle:active {
+  transform: scale(0.92);
+}
+
+@keyframes themeIconIn {
+  0% { transform: scale(0.3) rotate(-135deg); opacity: 0; }
+  60% { transform: scale(1.15) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.theme-toggle-icon {
+  display: inline-block;
+  animation: themeIconIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }

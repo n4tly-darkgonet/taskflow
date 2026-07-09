@@ -23,6 +23,18 @@ export default function Dashboard() {
     navigate(`/boards/${board.id}`);
   }
 
+  async function handleDelete(e, boardId, boardName) {
+    // Stop the click from also triggering the <Link> navigation underneath it.
+    e.preventDefault();
+    e.stopPropagation();
+
+    const confirmed = window.confirm(`Delete "${boardName}"? This can't be undone.`);
+    if (!confirmed) return;
+
+    await api.deleteBoard(auth.token, boardId);
+    setBoards((prev) => prev.filter((b) => b.id !== boardId));
+  }
+
   return (
     <div className="page">
       <header className="topbar">
@@ -53,7 +65,17 @@ export default function Dashboard() {
           <div className="board-grid">
             {boards.map((board) => (
               <Link key={board.id} to={`/boards/${board.id}`} className="board-tile">
-                <div className="board-tile-icon">{board.name[0].toUpperCase()}</div>
+                <div className="board-tile-top">
+                  <div className="board-tile-icon">{board.name[0].toUpperCase()}</div>
+                  <button
+                    className="board-tile-delete"
+                    onClick={(e) => handleDelete(e, board.id, board.name)}
+                    aria-label={`Delete ${board.name}`}
+                    title="Delete board"
+                  >
+                    ✕
+                  </button>
+                </div>
                 <h3>{board.name}</h3>
               </Link>
             ))}
