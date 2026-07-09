@@ -5,6 +5,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const db = require("./db");
 
 const authRoutes = require("./routes/auth");
 const boardRoutes = require("./routes/boards");
@@ -18,7 +19,7 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 
-app.use(cors()); // allows the frontend (running on a different port) to call this API
+app.use(cors()); // allows the frontend (running on a different origin) to call this API
 app.use(express.json()); // parses incoming JSON request bodies into req.body
 
 // Mount our route files under /api
@@ -40,6 +41,15 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`TaskFlow API running at http://localhost:${PORT}`);
-});
+
+// Make sure the database tables exist before we start accepting requests.
+db.init()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`TaskFlow API running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to the database:", err.message);
+    process.exit(1);
+  });

@@ -1,88 +1,81 @@
 // db.js
-// This file sets up our database connection and creates the tables
-// we need (if they don't already exist). We're using SQLite because
-// it needs zero setup - it's just a file on disk - but it's still a
-// real relational database with real SQL, the same skills transfer
-// directly to Postgres or MySQL later.
+// Now backed by Postgres (hosted on Neon) instead of a local SQLite file.
+// Why the switch: SQLite was a file on YOUR computer's disk. That's great
+// for developing locally, but most free hosting providers wipe their disk
+// on every restart/redeploy - so a real deployed app needs a database that
+// lives somewhere permanent. Neon gives us that for free.
+//
+// We use the same DATABASE_URL both locally and when deployed, so your
+// laptop and your live site share one database. (In a bigger company
+// you'd usually have a separate database per environment - we're keeping
+// it simple with one, which is completely fine for a personal project.)
 
-// Node's own built-in SQLite (available since Node 22, no extra install
-// or C++ compiler needed - unlike the "better-sqlite3" npm package).
-const { DatabaseSync } = require("node:sqlite");
-const path = require("path");
+const { Pool } = require("pg");
 
-const dbPath = path.join(__dirname, "taskflow.db");
-const db = new DatabaseSync(dbPath);
-
-// Enforce foreign key constraints (off by default in SQLite)
-db.exec("PRAGMA foreign_keys = ON");
-
-// node:sqlite doesn't ship a .transaction() helper the way better-sqlite3
-// does, so we add a small one ourselves with the same shape: call
-// db.transaction(fn) to get back a function - calling THAT function runs
-// fn() wrapped in BEGIN/COMMIT, and rolls back automatically if fn throws.
-db.transaction = function (fn) {
-  return function (...args) {
-    db.exec("BEGIN");
-    try {
-      const result = fn(...args);
-      db.exec("COMMIT");
-      return result;
-    } catch (err) {
-      db.exec("ROLLBACK");
-      throw err;
-    }
-  };
-};
-
-// Create tables if they don't exist yet.
-// exec() lets us run multiple SQL statements at once.
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at TEXT DEFAULT (datetime('now'))
-  );
-
-  CREATE TABLE IF NOT EXISTS boards (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS columns (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    board_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    position INTEGER NOT NULL,
-    FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    column_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT DEFAULT '',
-    due_date TEXT DEFAULT NULL,
-    position INTEGER NOT NULL,
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (column_id) REFERENCES columns(id) ON DELETE CASCADE
-  );
-`);
-
-// --- Migration: add due_date to databases created before this feature ---
-// This project already existed and people already have a taskflow.db file
-// with tasks in it. "CREATE TABLE IF NOT EXISTS" above only helps for
-// brand new databases - it does nothing to a table that already exists.
-// So we check whether the column is already there, and if not, add it.
-// This is exactly the kind of migration real production apps run whenever
-// they change their database shape after it's already storing real data.
-const taskTableInfo = db.prepare("PRAGMA table_info(tasks)").all();
-const hasDueDate = taskTableInfo.some((col) => col.name === "due_date");
-if (!hasDueDate) {
-  db.exec("ALTER TABLE tasks ADD COLUMN due_date TEXT DEFAULT NULL");
+if (!process.env.DATABASE_URL) {
+  console.error("Missing DATABASE_URL in your .env file. See .env.example.");
+  process.exit(1);
 }
 
-module.exports = db;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }, // Neon requires SSL
+});
+
+// Postgres doesn't have a built-in .transaction() helper like some
+// SQLite libraries do, so we write our own small one. It hands you a
+// "client" to run queries with - if your function throws, everything
+// gets rolled back; if it succeeds, everything gets committed together.
+async function withTransaction(fn) {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const result = await fn(client);
+    await client.query("COMMIT");
+    return result;
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Creates all our tables if they don't already exist. Safe to run every
+// time the server starts - it won't touch tables that already exist.
+async function init() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS boards (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS columns (
+      id SERIAL PRIMARY KEY,
+      board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      position INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS tasks (
+      id SERIAL PRIMARY KEY,
+      column_id INTEGER NOT NULL REFERENCES columns(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      due_date TEXT DEFAULT NULL,
+      position INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+  `);
+}
+
+module.exports = { pool, withTransaction, init };
