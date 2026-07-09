@@ -109,36 +109,3 @@ git push -u origin main
 
 Your `.env` and `taskflow.db` are already excluded via `.gitignore` -
 secrets and local data should never be committed.
-
-## Deploying it live (optional, when you're ready)
-
-- **Backend**: [Render](https://render.com) or [Railway](https://railway.app)
-  both have free tiers and deploy straight from a GitHub repo. Set the
-  `JWT_SECRET` environment variable in their dashboard (not in a committed
-  file). SQLite works but on most free hosting the disk resets on redeploy -
-  once you're ready for something permanent, swapping `better-sqlite3` for
-  a hosted Postgres database (e.g. [Neon](https://neon.tech), free tier) is
-  the natural next step.
-- **Frontend**: [Vercel](https://vercel.com) or [Netlify](https://netlify.com) -
-  connect your repo, set the build command to `npm run build`, and set
-  `VITE_API_URL` to your deployed backend's URL.
-
-Ask me when you're ready to actually do this step - I can walk you through
-whichever host you pick.
-
-## Ideas for what to build next
-
-Once this feels comfortable, here are natural next features (each is a
-good "next commit"):
-
-- **Persist login** across page refreshes using `localStorage`
-- **Task due dates** and color-coded labels/priority
-- **Editing** a task's title/description after creation (currently only
-  create/delete/move are wired up)
-- **Reordering columns** themselves via drag-and-drop
-- **Comments** on tasks
-- **Search/filter** tasks across a board
-- **Tests** - Jest for the backend routes is a great first testing project
-
-Whenever you want to add one of these, just tell me which one and I'll
-help you build it the same way.
