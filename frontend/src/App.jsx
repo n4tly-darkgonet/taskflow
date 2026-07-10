@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
+import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -14,6 +15,14 @@ function RequireAuth({ children }) {
   return children;
 }
 
+// The homepage shows different things depending on whether you're
+// logged in: a public landing page explaining TaskFlow for visitors,
+// or straight into the dashboard for people who already have an account.
+function Home() {
+  const { auth } = useAuth();
+  return auth ? <Dashboard /> : <Landing />;
+}
+
 export default function App() {
   return (
     <>
@@ -21,14 +30,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route
           path="/boards/:boardId"
           element={

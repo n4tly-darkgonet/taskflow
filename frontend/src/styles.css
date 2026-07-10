@@ -657,3 +657,129 @@ a {
   display: inline-block;
   animation: themeIconIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
+/* Landing page */
+.landing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+}
+
+.landing-nav-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.landing-hero {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 48px;
+  padding: 40px 48px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.landing-hero-text {
+  flex: 1 1 400px;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.landing-hero-text h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin-bottom: 18px;
+  max-width: 520px;
+}
+
+.landing-hero-text p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+
+.landing-cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.landing-cta {
+  padding: 12px 22px;
+  font-size: 15px;
+}
+
+.landing-preview {
+  flex: 1 1 420px;
+  display: flex;
+  gap: 14px;
+  animation: fadeInUp 0.5s ease 0.1s both;
+  pointer-events: none;
+}
+
+.landing-preview-col {
+  width: 190px;
+  min-width: 190px;
+  transform: scale(0.96);
+}
+
+.landing-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 20px 32px 60px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.landing-feature {
+  flex: 1 1 220px;
+  max-width: 280px;
+  text-align: center;
+  padding: 24px;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.landing-feature-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.landing-feature h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.landing-feature p {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .landing-hero-text h1 {
+    font-size: 30px;
+  }
+  .landing-preview {
+    display: none;
+  }
+}
