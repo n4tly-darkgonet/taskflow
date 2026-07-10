@@ -4,6 +4,7 @@ import { DragDropContext } from "@hello-pangea/dnd";
 import { api } from "../api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Column from "../components/Column.jsx";
+import Confetti from "../components/Confetti.jsx";
 
 export default function Board() {
   const { boardId } = useParams();
@@ -11,12 +12,13 @@ export default function Board() {
   const [board, setBoard] = useState(null);
   const [addingColumn, setAddingColumn] = useState(false);
   const [newColumnName, setNewColumnName] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
 
   useEffect(() => {
     api.getBoard(auth.token, boardId).then(setBoard);
   }, [auth.token, boardId]);
 
- async function handleAddTask(columnId, title, dueDate) {
+  async function handleAddTask(columnId, title, dueDate) {
     const task = await api.createTask(auth.token, columnId, title, dueDate);
     setBoard((prev) => ({
       ...prev,
@@ -67,6 +69,11 @@ export default function Board() {
 
     if (sourceColId === destColId && source.index === destination.index) return;
 
+    // Tracks whether this particular move is "landing in Done for the
+    // first time" (moved FROM a different column INTO one named Done),
+    // so we don't fire confetti just for reordering cards within Done.
+    let justCompleted = false;
+
     setBoard((prev) => {
       const columns = prev.columns.map((c) => ({ ...c, tasks: [...c.tasks] }));
       const sourceCol = columns.find((c) => c.id === sourceColId);
@@ -75,8 +82,17 @@ export default function Board() {
       const [movedTask] = sourceCol.tasks.splice(source.index, 1);
       destCol.tasks.splice(destination.index, 0, movedTask);
 
+      if (sourceColId !== destColId && destCol.name.trim().toLowerCase() === "done") {
+        justCompleted = true;
+      }
+
       return { ...prev, columns };
     });
+
+    if (justCompleted) {
+      setCelebrate(true);
+      setTimeout(() => setCelebrate(false), 1700);
+    }
 
     try {
       await api.moveTask(auth.token, taskId, destColId, destination.index);
@@ -93,6 +109,8 @@ export default function Board() {
 
   return (
     <div className="board-page">
+      {celebrate && <Confetti />}
+
       <header className="board-header">
         <Link to="/" className="back-link">← Boards</Link>
         <h1>{board.name}</h1>
