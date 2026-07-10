@@ -10,12 +10,18 @@ export default function ThemeToggle() {
       aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
       title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
     >
-      {/* The key={theme} is the trick here: whenever theme changes, React
-          treats this as a brand new element instead of updating the old
-          one, so the entrance animation below replays every time you
-          click the button. */}
-      <span key={theme} className="theme-toggle-icon">
-        {theme === "light" ? "🌙" : "☀️"}
+      {/* Little stars that only become visible once the track turns
+          into a night sky (in dark mode) - purely decorative. */}
+      <span className="theme-toggle-star theme-toggle-star-1" aria-hidden="true"></span>
+      <span className="theme-toggle-star theme-toggle-star-2" aria-hidden="true"></span>
+      <span className="theme-toggle-star theme-toggle-star-3" aria-hidden="true"></span>
+
+      {/* The sliding knob - its position is controlled entirely by CSS
+          based on the current theme, so it glides across the track. */}
+      <span className="theme-toggle-knob">
+        <span key={theme} className="theme-toggle-icon">
+          {theme === "light" ? "☀️" : "🌙"}
+        </span>
       </span>
     </button>
   );

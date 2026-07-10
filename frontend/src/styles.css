@@ -618,33 +618,58 @@ a {
   color: var(--ink);
 }
 
-.loading-screen .theme-toggle {
+.loading-screen /* The toggle is a horizontal "track" (like a light switch) with a
+   circular "knob" that slides from left to right. The track's
+   background gradient shifts from a warm sunset (light mode) to a
+   deep night sky (dark mode), and small stars fade in once it's dark. */
+.theme-toggle {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 100;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+  width: 60px;
+  height: 32px;
+  padding: 3px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd97a, #ff9d5c);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background 0.4s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="dark"] .theme-toggle {
+  background: linear-gradient(135deg, #1b1a2e, #2d2b55);
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent);
-  transform: scale(1.1) rotate(-8deg);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .theme-toggle:active {
-  transform: scale(0.92);
+  transform: scale(0.94);
+}
+
+.theme-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff8ec;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
+}
+
+[data-theme="dark"] .theme-toggle-knob {
+  transform: translateX(28px);
+  background: #2a2846;
 }
 
 @keyframes themeIconIn {
@@ -655,8 +680,26 @@ a {
 
 .theme-toggle-icon {
   display: inline-block;
-  animation: themeIconIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: themeIconIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
+
+.theme-toggle-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+[data-theme="dark"] .theme-toggle-star {
+  opacity: 0.9;
+}
+
+.theme-toggle-star-1 { top: 8px; left: 10px; }
+.theme-toggle-star-2 { top: 18px; left: 16px; width: 2px; height: 2px; }
+.theme-toggle-star-3 { top: 11px; left: 20px; width: 2px; height: 2px; }
 /* Landing page */
 .landing {
   display: flex;
