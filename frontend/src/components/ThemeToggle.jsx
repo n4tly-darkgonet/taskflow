@@ -1,28 +1,29 @@
 import { useTheme } from "../context/ThemeContext.jsx";
 
+// A simple two-button switch: one for Light, one for Dark. Clicking a
+// button switches directly to that mode (no toggling back and forth -
+// you pick exactly the one you want, like picking a radio option).
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setThemePreference } = useTheme();
 
   return (
-    <button
-      className="theme-toggle"
-      onClick={toggleTheme}
-      aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-      title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-    >
-      {/* Little stars that only become visible once the track turns
-          into a night sky (in dark mode) - purely decorative. */}
-      <span className="theme-toggle-star theme-toggle-star-1" aria-hidden="true"></span>
-      <span className="theme-toggle-star theme-toggle-star-2" aria-hidden="true"></span>
-      <span className="theme-toggle-star theme-toggle-star-3" aria-hidden="true"></span>
-
-      {/* The sliding knob - its position is controlled entirely by CSS
-          based on the current theme, so it glides across the track. */}
-      <span className="theme-toggle-knob">
-        <span key={theme} className="theme-toggle-icon">
-          {theme === "light" ? "☀️" : "🌙"}
-        </span>
-      </span>
-    </button>
+    <div className="theme-toggle" role="group" aria-label="Theme">
+      <button
+        className={theme === "light" ? "theme-seg-btn active" : "theme-seg-btn"}
+        onClick={() => setThemePreference("light")}
+        aria-label="Light mode"
+        title="Light mode"
+      >
+        ☀️
+      </button>
+      <button
+        className={theme === "dark" ? "theme-seg-btn active" : "theme-seg-btn"}
+        onClick={() => setThemePreference("dark")}
+        aria-label="Dark mode"
+        title="Dark mode"
+      >
+        🌙
+      </button>
+    </div>
   );
 }

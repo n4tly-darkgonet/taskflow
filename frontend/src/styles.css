@@ -638,68 +638,52 @@ a {
   transition: background 0.4s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-[data-theme="dark"] .theme-toggle {
-  background: linear-gradient(135deg, #1b1a2e, #2d2b55);
+[data-theme="dark"] /* A simple two-button segmented switch - one button for Light, one for
+   Dark. Whichever is currently active gets a soft blue highlight;
+   clicking a button switches directly to that mode. */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
-.theme-toggle:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.theme-toggle:active {
-  transform: scale(0.94);
-}
-
-.theme-toggle-knob {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #fff8ec;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+.theme-seg-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  width: 42px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-[data-theme="dark"] .theme-toggle-knob {
-  transform: translateX(28px);
-  background: #2a2846;
+.theme-seg-btn:first-child {
+  border-right: 1px solid var(--line);
 }
 
-@keyframes themeIconIn {
-  0% { transform: scale(0.3) rotate(-135deg); opacity: 0; }
-  60% { transform: scale(1.15) rotate(10deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0); opacity: 1; }
+.theme-seg-btn:hover {
+  background: var(--paper);
 }
 
-.theme-toggle-icon {
-  display: inline-block;
-  animation: themeIconIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+.theme-seg-btn.active {
+  background: #dbeafe;
+  color: #1e3a5f;
 }
 
-.theme-toggle-star {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: white;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+.theme-seg-btn.active:hover {
+  background: #dbeafe;
 }
-
-[data-theme="dark"] .theme-toggle-star {
-  opacity: 0.9;
-}
-
-.theme-toggle-star-1 { top: 8px; left: 10px; }
-.theme-toggle-star-2 { top: 18px; left: 16px; width: 2px; height: 2px; }
-.theme-toggle-star-3 { top: 11px; left: 20px; width: 2px; height: 2px; }
 /* Landing page */
 .landing {
   display: flex;
