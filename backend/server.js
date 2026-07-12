@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const boardRoutes = require("./routes/boards");
 const columnRoutes = require("./routes/columns");
 const taskRoutes = require("./routes/tasks");
+const profileRoutes = require("./routes/profile");
 
 if (!process.env.JWT_SECRET) {
   console.error("Missing JWT_SECRET in your .env file. Copy .env.example to .env and set one.");
@@ -36,6 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/boards", boardRoutes);
 app.use("/api", columnRoutes); // handles /api/boards/:boardId/columns and /api/columns/:id
 app.use("/api", taskRoutes); // handles /api/columns/:columnId/tasks and /api/tasks/:id
+app.use("/api/profile", profileRoutes);
 
 // Catch-all error handler - if any route throws, we end up here
 // instead of crashing the whole server.

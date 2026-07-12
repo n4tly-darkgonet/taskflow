@@ -855,3 +855,225 @@ a {
     opacity: 0;
   }
 }
+/* Topbar profile chip - replaces the old plain username + logout button */
+.topbar-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 10px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.topbar-profile-link:hover {
+  border-color: var(--line);
+  background: var(--surface);
+}
+
+.topbar-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+}
+
+/* Profile page */
+.profile-page {
+  flex: 1;
+  padding: 40px 32px 60px;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.profile-page h1 {
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.profile-card {
+  display: flex;
+  gap: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  display: grid;
+  place-items: center;
+}
+
+.profile-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-display-name-input {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 6px;
+  border-radius: 6px;
+  margin-left: -6px;
+}
+
+.profile-display-name-input:hover,
+.profile-display-name-input:focus {
+  border-color: var(--line);
+  background: var(--paper);
+  outline: none;
+}
+
+.profile-username {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.profile-meta {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.profile-email-input {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.profile-email-input:hover,
+.profile-email-input:focus {
+  border-color: var(--line);
+  background: var(--paper);
+  outline: none;
+  color: var(--ink);
+}
+
+.profile-save-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.profile-saved-msg {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.settings-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.settings-section h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.settings-row:first-of-type {
+  border-top: none;
+}
+
+.settings-row-column {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.settings-label {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.settings-value {
+  color: var(--ink-soft);
+}
+
+.appearance-options {
+  display: flex;
+  gap: 8px;
+}
+
+.appearance-btn {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.appearance-btn:hover {
+  border-color: var(--ink-soft);
+}
+
+.appearance-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.logout-btn {
+  color: var(--danger);
+  border-color: var(--danger-line);
+}
+
+.logout-btn:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}

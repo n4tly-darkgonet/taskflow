@@ -66,7 +66,7 @@ async function init() {
       position INTEGER NOT NULL
     );
 
-    CREATE TABLE IF NOT EXISTS tasks (
+CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
       column_id INTEGER NOT NULL REFERENCES columns(id) ON DELETE CASCADE,
       title TEXT NOT NULL,
@@ -76,6 +76,14 @@ async function init() {
       created_at TIMESTAMP DEFAULT NOW()
     );
   `);
-}
 
+  // --- Migration: add profile fields to databases created before this
+  // feature existed. Postgres makes this easy - "ADD COLUMN IF NOT
+  // EXISTS" is safe to run every time the server starts, whether the
+  // column is already there or not.
+  await pool.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name TEXT;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT;
+  `);
+}
 module.exports = { pool, withTransaction, init };

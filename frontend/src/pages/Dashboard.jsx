@@ -4,7 +4,7 @@ import { api } from "../api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Dashboard() {
-  const { auth, logout } = useAuth();
+  const { auth } = useAuth();
   const [boards, setBoards] = useState(null); // null = still loading
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
@@ -42,10 +42,10 @@ export default function Dashboard() {
           <span className="brand-mark">T</span>
           TaskFlow
         </div>
-        <div className="topbar-right">
-          <span>{auth.username}</span>
-          <button className="btn" onClick={logout}>Log out</button>
-        </div>
+        <Link to="/profile" className="topbar-profile-link">
+          <span className="topbar-avatar">{auth.username[0].toUpperCase()}</span>
+          {auth.username}
+        </Link>
       </header>
 
       <main className="dashboard">

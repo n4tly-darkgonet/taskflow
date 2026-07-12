@@ -42,9 +42,13 @@ export const api = {
     request(`/boards/${boardId}/columns`, { method: "POST", body: { name }, token }),
   deleteColumn: (token, id) => request(`/columns/${id}`, { method: "DELETE", token }),
 
-  createTask: (token, columnId, title, due_date) =>
+createTask: (token, columnId, title, due_date) =>
     request(`/columns/${columnId}/tasks`, { method: "POST", body: { title, due_date }, token }),
   deleteTask: (token, id) => request(`/tasks/${id}`, { method: "DELETE", token }),
   moveTask: (token, taskId, toColumnId, toIndex) =>
     request("/tasks/move", { method: "POST", body: { taskId, toColumnId, toIndex }, token }),
+
+  getProfile: (token) => request("/profile", { token }),
+  updateProfile: (token, { display_name, email }) =>
+    request("/profile", { method: "PATCH", body: { display_name, email }, token }),
 };
